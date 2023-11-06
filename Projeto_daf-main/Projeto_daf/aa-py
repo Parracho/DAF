@@ -1,0 +1,45 @@
+import networkx as nx 
+from random import randrange
+
+from sympy import true
+
+node_number = 20
+
+L = 100
+dL = 5
+
+x = []
+y = []
+pos={}
+
+G = nx.Graph()
+for i in range(0,node_number):
+    rx = randrange(0,L,dL)
+    ry = randrange(0,L,dL)
+    while rx in x and ry in y:
+        rx = randrange(0,L,dL)
+        ry = randrange(0,L,dL)
+    x.append(rx)
+    y.append(ry)
+    G.add_node(i,pos=(rx,ry))
+    G.add_node(i, pos=(rx,ry))
+
+def distance(G,src,node):
+    src_pos = G.nodes[src]['pos']
+    node_pos = G.nodes[node]['pos']
+    print(src_pos)
+    print(node_pos)
+    print((src_pos[0]-node_pos[0])**2)
+    print((src_pos[1]-node_pos[1])**2)
+    d = ((src_pos[0]-node_pos[0])**2 + (src_pos[1]-node_pos[1])**2)**(1/2)
+    print(d)
+    return d
+
+for v in G.nodes():
+    neighbors = G.neighbors(v)
+    for n in neighbors:
+        n
+    
+
+
+

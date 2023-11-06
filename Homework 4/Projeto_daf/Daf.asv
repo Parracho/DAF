@@ -1,0 +1,60 @@
+%%
+clear all
+close all
+clc
+
+alpha_0 = 1;
+beta = ;
+gama = 3;
+v = 1;
+dT = 0.5;
+Tc1 = 130;
+Tc2 = 100;
+Tf = 160;
+
+PsiMax = 20; 
+PsiMin = 0;
+
+
+%%
+
+alpha_1 = @ (T) alpha_0 * (T-Tc1);
+alpha_2 = @ (T) alpha_0 * (T-Tc2);
+
+psi_1_coup = zeros(Tc1/dT-1,1);
+psi_2_coup = zeros(Tc1/dT-1,1);
+psi_1 = zeros(Tc1/dT-1,1);
+psi_2 = zeros(Tc1/dT-1,1);
+
+
+i = 0;
+T = 0:dT:Tf;
+PsiMax_noCoup = PsiMax;
+PsiMin_noCoup = PsiMin;
+for t = T
+    i=i+1;
+    "T: " + i + " - " + length(T);
+    out = solve_F(alpha_0,beta,gama,v,Tc1,Tc2,t,PsiMax,PsiMin);
+    psi_1_coup(i) = out(1);
+    psi_2_coup(i) = out(2);
+    PsiMax = max([psi_1_coup(i),psi_2_coup(i)]) * (1.3)
+    PsiMin = min([psi_1_coup(i),psi_2_coup(i)]) * (0.30)
+    
+    %No coupling
+    out = solve_F_noCoup(alpha_0,beta,gama,Tc1,Tc2,t,PsiMax_noCoup,PsiMin_noCoup);
+    psi_1(i) = out(1);
+    psi_2(i) = out(2);
+    PsiMax_noCoup = max([psi_1(i),psi_2(i)]) * (1.5);
+    PsiMin_noCoup = min([psi_1(i),psi_2(i)]) * (0.50);
+end
+%%
+figure(1)
+plot(T(1:length(psi_1)),psi_1,'r--')
+hold on
+plot(T(1:length(psi_1)),psi_2,'b--')
+
+figure(2)
+plot(T(1:length(psi_1_coup)),psi_1_coup,'r')
+hold on
+plot(T(1:length(psi_1_coup)),psi_2_coup,'b')
+
